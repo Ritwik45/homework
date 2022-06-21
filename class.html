@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/1935d064dd.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
+
+
+        :root {
+            --white: #fff;
+            --black: #1c2b2d;
+            --blue: #31326f;
+            --color-primary: #9d0191;
+            --color-sec: #db6400;
+            --color-grey: #eee;
+            --color-dark-grey: #222831;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #eee;
+        }
+        
+        /* UTILITY */
+        .p-small {
+            padding-bottom: 5px;
+        }
+        .p-medium {
+            padding-bottom: 10px;
+        }
+        .p-y {
+            padding: 10px 0;
+        }
+        .m-y {
+            margin: 10px 0;
+        }
+        
+        p {
+            font-size: 1.6rem;
+            line-height: 1.5;
+        }
+        
+        img {
+            width: 100%;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            line-height: 2;
+        }
+        
+        header form {
+            display: flex;
+            flex-direction: column;
+            width: 30rem;
+        }
+        
+        form > * {
+            margin-bottom: 5px;
+            outline: none;
+            font-size: 1.2rem;
+            padding: 7px;
+            border: 1px solid #777;
+            border-radius: 3px;
+        }
+        
+        form textarea {
+            padding: 7px 0 40px 5px;
+            font-size: 1.2rem;
+            font-family: inherit;
+        }
+        
+        ::placeholder {
+            font-size: 1rem;
+        }
+        
+        form button {
+            background-color: var(--color-sec);
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all .3s;
+        }
+        
+        form button:hover {
+            background-color: var(--color-primary);
+        }
+        
+        .ClassWork {
+            padding: 1rem;
+            /* border: 1px solid #777; */
+            background-color: #fff;
+            border-radius: 3px;
+            margin: 1rem 0;
+        
+        }
+        
+        .ClassWork-counter,
+        .ClassWork-text {
+            font-size: 1.2rem;
+        }
+        
+        .ClassWork-title {
+            font-size: 1.5rem;
+            color: var(--black);
+        }
+        
+        .ClassWork-btn {
+            padding: 7px;
+            margin-top: 5px;
+            font-size: 1rem;
+            background-color: orangered;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .edit-btn {
+            background-color: var(--color-primary);
+        }
+        </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>My ClassWorks App</h1>
+            <form action="">
+                <input type="text" id="ClassWork-title" placeholder="ClassWork title">
+                <textarea id="ClassWork-text" placeholder="ClassWork Details"></textarea>
+            
+                <button id="add-btn">Add ClassWork</button>
+            </form>
+        </div>
+    </header>
+
+    <section>
+        <div class="container">
+            <h2>ClassWork App</h2>
+            <hr>
+            <div id="ClassWorks">
+        
+                    <div class="ClassWork">
+                        <p class="ClassWork-counter">ClassWork ${index + 1}</p>
+                        <h3 class="ClassWork-title"> $element.title </h3>
+                        <p class="ClassWork-text"> $element.text</p>
+                        <button class="ClassWork-btn">Delete ClassWork</button>
+                        <button class="notr-btn edit-btn">Delete ClassWork</button>
+                    </div>
+                
+            </div>
+        </div>
+    </section>
+    
+
+    <script>
+        // Add ClassWork to local storage
+let addBtn = document.getElementById("add-btn");
+addBtn.addEventListener("click", function(e) {
+
+  let addTitle = document.getElementById("ClassWork-title");
+  let addTxt = document.getElementById("ClassWork-text");
+  
+    if (addTitle.value == "" || addTxt.value == "") {
+        return alert("Please add ClassWork Title and Details")
+    }
+
+  let ClassWorks = localStorage.getItem("ClassWorks");
+  if (ClassWorks == null) {
+    ClassWorksObj = [];
+  } else {
+    ClassWorksObj = JSON.parse(ClassWorks);
+  }
+  let myObj = {
+    title: addTitle.value,
+    text: addTxt.value
+  }
+  ClassWorksObj.push(myObj);
+  localStorage.setItem("ClassWorks", JSON.stringify(ClassWorksObj));
+  addTxt.value = "";
+  addTitle.value = "";
+//   console.log(ClassWorksObj);
+  showClassWorks();
+});
+
+// Function to show elements from localStorage
+function showClassWorks() {
+  let ClassWorks = localStorage.getItem("ClassWorks");
+  if (ClassWorks == null) {
+    ClassWorksObj = [];
+  } else {
+    ClassWorksObj = JSON.parse(ClassWorks);
+  }
+  let html = "";
+  ClassWorksObj.forEach(function(element, index) {
+    html += `
+        <div class="ClassWork">
+            <p class="ClassWork-counter">ClassWork ${index + 1}</p>
+            <h3 class="ClassWork-title"> ${element.title} </h3>
+            <p class="ClassWork-text"> ${element.text}</p>
+            <button id="${index}"onclick="deleteClassWork(this.id)" class="ClassWork-btn">Delete ClassWork</button>
+            <button id="${index}"onclick="editClassWork(this.id)" class="ClassWork-btn edit-btn">Edit ClassWork</button>
+        </div>
+            `;
+  });
+  let ClassWorksElm = document.getElementById("ClassWorks");
+  if (ClassWorksObj.length != 0) {
+    ClassWorksElm.innerHTML = html;
+  } else {
+    ClassWorksElm.innerHTML = `No ClassWorks Yet! Add a ClassWork using the form above.`;
+  }
+}
+
+// Function to delete a ClassWork
+function deleteClassWork(index) {
+//   console.log("I am deleting", index);
+    let confirmDel = confirm("Delete this ClassWork?");
+    if (confirmDel == true) {
+        let ClassWorks = localStorage.getItem("ClassWorks");
+        if (ClassWorks == null) {
+            ClassWorksObj = [];
+        } else {
+            ClassWorksObj = JSON.parse(ClassWorks);
+        }
+
+        ClassWorksObj.splice(index, 1);
+        localStorage.setItem("ClassWorks", JSON.stringify(ClassWorksObj));
+        showClassWorks();
+    }
+  
+}
+
+// Function to Edit the ClassWork
+function editClassWork(index) {
+    let ClassWorks = localStorage.getItem("ClassWorks");
+    let addTitle = document.getElementById("ClassWork-title");
+    let addTxt = document.getElementById("ClassWork-text");
+
+    if (addTitle.value !== "" || addTxt.value !== "") {
+      return alert("Please clear the form before editing a ClassWork")
+    } 
+
+    if (ClassWorks == null) {
+      ClassWorksObj = [];
+    } else {
+      ClassWorksObj = JSON.parse(ClassWorks);
+    }
+    console.log(ClassWorksObj);
+
+    ClassWorksObj.findIndex((element, index) => {
+      addTitle.value = element.title;
+      addTxt.value = element.text;
+    })
+    ClassWorksObj.splice(index, 1);
+        localStorage.setItem("ClassWorks", JSON.stringify(ClassWorksObj));
+        showClassWorks();
+}
+
+
+showClassWorks();
+    </script>
+</body>
+</html>

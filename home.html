@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/1935d064dd.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
+
+
+        :root {
+            --white: #fff;
+            --black: #1c2b2d;
+            --blue: #31326f;
+            --color-primary: #9d0191;
+            --color-sec: #db6400;
+            --color-grey: #eee;
+            --color-dark-grey: #222831;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #eee;
+        }
+        
+        /* UTILITY */
+        .p-small {
+            padding-bottom: 5px;
+        }
+        .p-medium {
+            padding-bottom: 10px;
+        }
+        .p-y {
+            padding: 10px 0;
+        }
+        .m-y {
+            margin: 10px 0;
+        }
+        
+        p {
+            font-size: 1.6rem;
+            line-height: 1.5;
+        }
+        
+        img {
+            width: 100%;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            line-height: 2;
+        }
+        
+        header form {
+            display: flex;
+            flex-direction: column;
+            width: 30rem;
+        }
+        
+        form > * {
+            margin-bottom: 5px;
+            outline: none;
+            font-size: 1.2rem;
+            padding: 7px;
+            border: 1px solid #777;
+            border-radius: 3px;
+        }
+        
+        form textarea {
+            padding: 7px 0 40px 5px;
+            font-size: 1.2rem;
+            font-family: inherit;
+        }
+        
+        ::placeholder {
+            font-size: 1rem;
+        }
+        
+        form button {
+            background-color: var(--color-sec);
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all .3s;
+        }
+        
+        form button:hover {
+            background-color: var(--color-primary);
+        }
+        
+        .Homework {
+            padding: 1rem;
+            /* border: 1px solid #777; */
+            background-color: #fff;
+            border-radius: 3px;
+            margin: 1rem 0;
+        
+        }
+        
+        .Homework-counter,
+        .Homework-text {
+            font-size: 1.2rem;
+        }
+        
+        .Homework-title {
+            font-size: 1.5rem;
+            color: var(--black);
+        }
+        
+        .Homework-btn {
+            padding: 7px;
+            margin-top: 5px;
+            font-size: 1rem;
+            background-color: orangered;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .edit-btn {
+            background-color: var(--color-primary);
+        }
+        </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>My Homeworks App</h1>
+            <form action="">
+                <input type="text" id="Homework-title" placeholder="Homework title">
+                <textarea id="Homework-text" placeholder="Homework Details"></textarea>
+            
+                <button id="add-btn">Add Homework</button>
+            </form>
+        </div>
+    </header>
+
+    <section>
+        <div class="container">
+            <h2>Homework App</h2>
+            <hr>
+            <div id="Homeworks">
+        
+                    <div class="Homework">
+                        <p class="Homework-counter">Homework ${index + 1}</p>
+                        <h3 class="Homework-title"> $element.title </h3>
+                        <p class="Homework-text"> $element.text</p>
+                        <button class="Homework-btn">Delete Homework</button>
+                        <button class="notr-btn edit-btn">Delete Homework</button>
+                    </div>
+                
+            </div>
+        </div>
+    </section>
+    
+
+    <script>
+        // Add Homework to local storage
+let addBtn = document.getElementById("add-btn");
+addBtn.addEventListener("click", function(e) {
+
+  let addTitle = document.getElementById("Homework-title");
+  let addTxt = document.getElementById("Homework-text");
+  
+    if (addTitle.value == "" || addTxt.value == "") {
+        return alert("Please add Homework Title and Details")
+    }
+
+  let Homeworks = localStorage.getItem("Homeworks");
+  if (Homeworks == null) {
+    HomeworksObj = [];
+  } else {
+    HomeworksObj = JSON.parse(Homeworks);
+  }
+  let myObj = {
+    title: addTitle.value,
+    text: addTxt.value
+  }
+  HomeworksObj.push(myObj);
+  localStorage.setItem("Homeworks", JSON.stringify(HomeworksObj));
+  addTxt.value = "";
+  addTitle.value = "";
+//   console.log(HomeworksObj);
+  showHomeworks();
+});
+
+// Function to show elements from localStorage
+function showHomeworks() {
+  let Homeworks = localStorage.getItem("Homeworks");
+  if (Homeworks == null) {
+    HomeworksObj = [];
+  } else {
+    HomeworksObj = JSON.parse(Homeworks);
+  }
+  let html = "";
+  HomeworksObj.forEach(function(element, index) {
+    html += `
+        <div class="Homework">
+            <p class="Homework-counter">Homework ${index + 1}</p>
+            <h3 class="Homework-title"> ${element.title} </h3>
+            <p class="Homework-text"> ${element.text}</p>
+            <button id="${index}"onclick="deleteHomework(this.id)" class="Homework-btn">Delete Homework</button>
+            <button id="${index}"onclick="editHomework(this.id)" class="Homework-btn edit-btn">Edit Homework</button>
+        </div>
+            `;
+  });
+  let HomeworksElm = document.getElementById("Homeworks");
+  if (HomeworksObj.length != 0) {
+    HomeworksElm.innerHTML = html;
+  } else {
+    HomeworksElm.innerHTML = `No Homeworks Yet! Add a Homework using the form above.`;
+  }
+}
+
+// Function to delete a Homework
+function deleteHomework(index) {
+//   console.log("I am deleting", index);
+    let confirmDel = confirm("Delete this Homework?");
+    if (confirmDel == true) {
+        let Homeworks = localStorage.getItem("Homeworks");
+        if (Homeworks == null) {
+            HomeworksObj = [];
+        } else {
+            HomeworksObj = JSON.parse(Homeworks);
+        }
+
+        HomeworksObj.splice(index, 1);
+        localStorage.setItem("Homeworks", JSON.stringify(HomeworksObj));
+        showHomeworks();
+    }
+  
+}
+
+// Function to Edit the Homework
+function editHomework(index) {
+    let Homeworks = localStorage.getItem("Homeworks");
+    let addTitle = document.getElementById("Homework-title");
+    let addTxt = document.getElementById("Homework-text");
+
+    if (addTitle.value !== "" || addTxt.value !== "") {
+      return alert("Please clear the form before editing a Homework")
+    } 
+
+    if (Homeworks == null) {
+      HomeworksObj = [];
+    } else {
+      HomeworksObj = JSON.parse(Homeworks);
+    }
+    console.log(HomeworksObj);
+
+    HomeworksObj.findIndex((element, index) => {
+      addTitle.value = element.title;
+      addTxt.value = element.text;
+    })
+    HomeworksObj.splice(index, 1);
+        localStorage.setItem("Homeworks", JSON.stringify(HomeworksObj));
+        showHomeworks();
+}
+
+
+showHomeworks();
+    </script>
+</body>
+</html>
